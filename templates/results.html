@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ heading }} - DramaDome</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <div class="nav-links"><a href="/">&larr; Back to home</a></div>
+
+        <form class="search-box" action="/search" method="get">
+            <input type="text" name="q" value="{{ query or '' }}" placeholder='Try "super hero", "detective", "high school love"...'>
+            <button type="submit">Search</button>
+        </form>
+
+        <div class="category-grid">
+            {% for c in categories %}
+            <a class="category-pill {% if active_category and active_category.lower() == c.lower() %}active{% endif %}" href="/category/{{ c }}">{{ c }}</a>
+            {% endfor %}
+        </div>
+
+        {% if audience_categories %}
+        <div class="category-grid">
+            {% for slug, label in audience_categories %}
+            <a class="category-pill audience-pill {% if active_audience == slug %}active{% endif %}" href="/audience/{{ slug }}">{{ label }}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if top_actors %}
+        <div class="category-grid">
+            {% for a in top_actors %}
+            <a class="category-pill actor-pill" href="/actor?q={{ a }}">{{ a }}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <h1>{{ heading }}</h1>
+        <p>{{ subheading }}</p>
+
+        {% if sort_options and base_url %}
+        <form method="get" action="{{ base_url.split('?')[0] }}" class="sort-form">
+            {% if query %}<input type="hidden" name="q" value="{{ query }}">{% endif %}
+            <label for="sort">Sort by:</label>
+            <select name="sort" id="sort" onchange="this.form.submit()">
+                {% if query %}<option value="" {% if not active_sort %}selected{% endif %}>Best match</option>{% endif %}
+                {% for key, label in sort_options %}
+                <option value="{{ key }}" {% if active_sort == key %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </form>
+        {% endif %}
+
+        {% if results %}
+        <div class="results-grid">
+            {% for d in results %}
+            <div class="drama-card">
+                <h3>{{ d.name }}</h3>
+                <div class="meta">{{ d.country }} &middot; {{ d.no_of_viewers|int }} viewers{% if d.rating %} &middot; {{ d.rating }}/10{% endif %}</div>
+                <div class="genres">{{ d.genres }}</div>
+                {% if d.content %}<p class="synopsis">{{ d.content }}</p>{% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">No matching dramas found. Try a different word or category.</div>
+        {% endif %}
+    </div>
+</div>
+</body>
+</html>

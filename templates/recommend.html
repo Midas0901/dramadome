@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Filter Recommendations - DramaDome</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <div class="nav-links"><a href="/">&larr; Back to home</a></div>
+        <h1>Filter by Genre &amp; Country</h1>
+
+        <form method="post" style="display:flex; gap:12px; flex-wrap:wrap; margin:15px 0;">
+            <select name="genre" style="padding:10px; border-radius:8px; border:1px solid #ccc;">
+                <option value="all">All genres</option>
+                {% for g in genres %}
+                <option value="{{ g }}" {% if selected_genre == g %}selected{% endif %}>{{ g }}</option>
+                {% endfor %}
+            </select>
+            <select name="country" style="padding:10px; border-radius:8px; border:1px solid #ccc;">
+                <option value="all">All countries</option>
+                {% for c in countries %}
+                <option value="{{ c }}" {% if selected_country == c %}selected{% endif %}>{{ c }}</option>
+                {% endfor %}
+            </select>
+            <button class="btn" type="submit">Apply filters</button>
+        </form>
+
+        {% if results %}
+        <p>{{ results|length }} title(s) found</p>
+        <div class="results-grid">
+            {% for d in results %}
+            <div class="drama-card">
+                <h3>{{ d.name }}</h3>
+                <div class="meta">{{ d.country }} &middot; {{ d.no_of_viewers|int }} viewers{% if d.rating %} &middot; {{ d.rating }}/10{% endif %}</div>
+                <div class="genres">{{ d.genres }}</div>
+                {% if d.content %}<p class="synopsis">{{ d.content }}</p>{% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">Choose a genre and/or country above, then click "Apply filters".</div>
+        {% endif %}
+    </div>
+</div>
+</body>
+</html>
