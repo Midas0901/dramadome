@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Profile - DramaDome</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <div class="nav-links"><a href="/">&larr; Back to home</a> <a href="/users">All users</a></div>
+        <h1>User Profile: {{ user.user_id }}</h1>
+        <div class="stats">
+            <div class="stat">Gender<br><strong style="font-size:16px;">{{ user.gender }}</strong></div>
+            <div class="stat">Location<br><strong style="font-size:16px;">{{ user.location }}</strong></div>
+            <div class="stat">Preferred genre<br><strong style="font-size:16px;">{{ user.preferred_genre }}</strong></div>
+            <div class="stat">Preferred country<br><strong style="font-size:16px;">{{ user.preferred_country }}</strong></div>
+        </div>
+
+        <h2>Watch history ({{ watched|length }} titles)</h2>
+        {% if watched %}
+        <table>
+            <tr><th>Title</th><th>Country</th><th>Genres</th></tr>
+            {% for d in watched %}
+            <tr>
+                <td>{{ d.name }}</td>
+                <td>{{ d.country }}</td>
+                <td>{{ d.genres }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+        <div class="empty-state">This user has no recorded watch history.</div>
+        {% endif %}
+    </div>
+</div>
+</body>
+</html>
